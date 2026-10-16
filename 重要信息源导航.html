@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重要信息源导航 · 宏观事件与热点</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --line:#e3e6eb; --line-2:#eef0f3;
+    --text:#171a1f; --sub:#6b7280; --sub-2:#9aa1ab;
+    --blue:#2563eb; --blue-bg:#eef4ff; --blue-line:#d6e3ff;
+    --red:#d92b2b; --red-bg:#fdeeee; --amber:#c2760a; --amber-bg:#fdf3e3;
+    --green:#17864b; --green-bg:#eaf7f0; --purple:#7c5cd6;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  body.lock{overflow:hidden}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 24px 80px}
+
+  /* header */
+  .kicker{display:inline-block;font-size:12px;letter-spacing:.08em;color:var(--blue);
+    background:var(--blue-bg);border:1px solid var(--blue-line);border-radius:99px;padding:3px 11px;margin-bottom:14px}
+  h1{font-size:27px;line-height:1.3;margin:0 0 10px;letter-spacing:-.01em}
+  .lede{color:var(--sub);max-width:780px;margin:0}
+  .stamp{margin-top:14px;font-size:12px;color:var(--sub-2)}
+
+  /* action buttons */
+  .actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:26px 0 6px}
+  .btn{
+    display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;transition:box-shadow .16s, transform .16s, border-color .16s;
+  }
+  .btn:hover{box-shadow:0 8px 24px rgba(23,26,31,.09);transform:translateY(-2px);border-color:#cfd5de}
+  .btn.primary{background:linear-gradient(180deg,#f7faff,#fff);border-color:var(--blue-line)}
+  .btn.primary:hover{border-color:#b9cdff}
+  .btn-t{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
+  .btn-t .arrow{margin-left:auto;color:var(--blue);font-weight:400}
+  .btn-s{display:block;font-size:12.5px;color:var(--sub)}
+  .pill{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-line)}
+
+  /* section */
+  section{margin-top:44px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  h2{font-size:18px;margin:0}
+  .sec-note{color:var(--sub-2);font-size:12.5px}
+  .sec-desc{color:var(--sub);font-size:13px;margin:6px 0 20px;max-width:900px}
+
+  /* regime cards */
+  .regime{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+  .rg{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px}
+  .rg-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--sub);margin-bottom:8px}
+  .rg-v{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:7px}
+  .rg-v.up{color:var(--red)}
+  .rg-v.down{color:var(--green)}
+  .rg-p{margin:0;font-size:12.5px;color:var(--sub)}
+  .rg-p b{color:var(--text);font-weight:600}
+
+  /* source groups */
+  .group{margin-bottom:26px}
+  .group-title{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;
+    margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none}
+  .dot.g2{background:var(--green)} .dot.g3{background:var(--amber)}
+  .dot.g4{background:var(--purple)} .dot.g5{background:var(--red)}
+  .gname-en{color:var(--sub-2);font-weight:400;font-size:12px}
+  .srcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+  .src{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;text-decoration:none;color:inherit;transition:box-shadow .16s,transform .16s,border-color .16s}
+  .src:hover{box-shadow:0 6px 18px rgba(23,26,31,.08);transform:translateY(-2px);border-color:#cfd5de}
+  .src-name{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:4px}
+  .badge{font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:5px;color:var(--sub);background:#f1f3f6;flex:none}
+  .badge.ok{color:var(--green);background:var(--green-bg)}
+  .badge.js{color:var(--amber);background:var(--amber-bg)}
+  .src-url{font-size:11.5px;color:var(--sub-2);word-break:break-all;margin-bottom:6px}
+  .src-desc{font-size:12.5px;color:var(--sub);line-height:1.55}
+
+  .callout{background:var(--blue-bg);border:1px solid var(--blue-line);border-left:3px solid var(--blue);
+    border-radius:10px;padding:14px 18px;margin-top:16px;font-size:13px;color:#1e3a8a}
+  .warn{background:#fdf7ee;border:1px solid #f3e0c0;border-left:3px solid var(--amber);
+    border-radius:10px;padding:14px 18px;margin-top:14px;font-size:12.5px;color:#7a5210}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(20,23,28,.46);z-index:100;display:none;overflow:auto;padding:38px 20px 60px}
+  .modal.open{display:block}
+  .modal-box{max-width:1000px;margin:0 auto;background:#fff;border-radius:16px;
+    box-shadow:0 24px 60px rgba(0,0,0,.26);overflow:hidden;animation:pop .18s ease-out}
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+  .modal-head{display:flex;align-items:center;gap:14px;padding:19px 24px;border-bottom:1px solid var(--line);
+    background:#fff;position:sticky;top:0;z-index:3}
+  .modal-head h3{margin:0;font-size:17px}
+  .modal-head .sub{font-size:12.5px;color:var(--sub-2)}
+  .close{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:9px;width:32px;height:32px;
+    font-size:17px;line-height:1;color:var(--sub);cursor:pointer;font-family:inherit}
+  .close:hover{background:#f4f5f7;color:var(--text)}
+  .modal-body{padding:20px 24px 34px}
+
+  /* tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 15px;font-size:13px;
+    font-family:inherit;cursor:pointer;color:var(--sub);font-weight:600}
+  .tab:hover{border-color:#cfd5de;color:var(--text)}
+  .tab.on{background:var(--text);border-color:var(--text);color:#fff}
+
+  /* calendar */
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal-h{font-size:11.5px;color:var(--sub-2);text-align:center;padding:4px 0;font-weight:700}
+  .cal-h.we{color:#c2c8d0}
+  .cal-d{min-height:86px;border:1px solid var(--line-2);border-radius:9px;padding:6px 6px 7px;background:#fff}
+  .cal-d.pad{border:none;background:transparent;min-height:0}
+  .cal-d.today{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
+  .dn{font-size:11.5px;color:var(--sub-2);font-weight:700;display:block;margin-bottom:3px}
+  .cal-d.today .dn{color:var(--blue)}
+  .cal-ev{display:block;font-size:11px;line-height:1.35;margin-top:3px;padding:3px 5px;border-radius:5px;
+    text-decoration:none;color:#334155;background:#f1f3f6;border-left:2px solid var(--sub-2)}
+  .cal-ev:hover{filter:brightness(.97)}
+  .cal-ev.hi{background:var(--red-bg);border-left-color:var(--red);color:#8a1c1c}
+  .cal-ev.mid{background:var(--amber-bg);border-left-color:var(--amber);color:#7a5210}
+  .cal-ev .tm{font-weight:700}
+  .cal-legend{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 0;font-size:12px;color:var(--sub)}
+  .cal-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .notes{margin-top:18px;background:#fafbfc;border:1px solid var(--line);border-radius:10px;padding:13px 17px}
+  .notes h4{margin:0 0 7px;font-size:13px}
+  .notes ul{margin:0;padding-left:17px;font-size:12.5px;color:var(--sub)}
+  .notes li{margin-bottom:4px}
+
+  /* archive */
+  .arc-item{position:relative;padding:0 0 24px 24px;border-left:2px solid var(--line-2)}
+  .arc-item:last-child{border-left-color:transparent;padding-bottom:0}
+  .arc-item::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;
+    background:#fff;border:2px solid var(--blue)}
+  .arc-item.hi::before{border-color:var(--red)}
+  .arc-date{font-size:12px;color:var(--sub);font-weight:700;letter-spacing:.01em}
+  .arc-title{font-size:15px;font-weight:600;margin:4px 0 8px;line-height:1.45}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .chip{font-size:11.5px;background:#f1f3f6;border:1px solid var(--line-2);border-radius:99px;padding:2px 10px;color:#374151}
+  .arc-market{font-size:12.5px;color:var(--sub);background:#fafbfc;border:1px dashed var(--line);border-radius:9px;
+    padding:8px 12px;margin-bottom:9px}
+  .arc-market b{color:var(--text);font-weight:600}
+  .arc-links{display:flex;gap:16px;flex-wrap:wrap}
+  .arc-links a{font-size:12.5px;color:var(--blue);text-decoration:none;border-bottom:1px solid #c9daff}
+  .arc-links a:hover{border-bottom-color:var(--blue)}
+
+  /* howto */
+  table.rule{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 18px}
+  table.rule th{text-align:left;font-weight:600;color:var(--sub);padding:8px 10px;border-bottom:1px solid var(--line);
+    background:#fafbfc;font-size:12px}
+  table.rule td{padding:9px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  table.rule code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:#334155;
+    background:#f4f5f7;border:1px solid var(--line-2);border-radius:4px;padding:1px 5px;word-break:break-all}
+  .ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px;margin-top:6px}
+  .way{border:1px solid var(--line);border-radius:10px;padding:13px 15px;background:#fff}
+  .way h4{margin:0 0 6px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+  .way .num{width:19px;height:19px;border-radius:6px;background:var(--blue);color:#fff;font-size:11px;
+    font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+  .way p{margin:0;font-size:12.5px;color:var(--sub)}
+  .way .best{font-size:10.5px;font-weight:600;color:var(--green);background:var(--green-bg);border-radius:99px;padding:1px 7px}
+
+  #tip{position:fixed;top:0;left:0;z-index:200;max-width:300px;pointer-events:none;background:#1f2328;color:#f2f4f7;
+    font-size:12.5px;line-height:1.55;padding:9px 12px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.22);
+    opacity:0;transition:opacity .12s;will-change:transform}
+  #tip.on{opacity:1}
+
+  footer{margin-top:54px;padding-top:20px;border-top:1px solid var(--line);color:var(--sub-2);font-size:12px}
+
+  @media(max-width:720px){
+    .cal-d{min-height:64px;padding:4px}
+    .cal-ev{font-size:10px;padding:2px 3px}
+    .modal{padding:16px 10px 40px}
+    .modal-body{padding:16px 14px 28px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="kicker">宏观事件 · 数据日历 · 热点追踪</span>
+    <h1>重要信息源导航</h1>
+    <p class="lede">
+      只保留真正会驱动市场的节点：官方数据发布（CPI / 非农 / GDP / PCE）、国际会议与地缘事件。
+      点开下面的按钮拿日历和历史原文，卡片悬停可看每个源能拿到什么。
+    </p>
+    <div class="stamp">更新：2026-10-09　·　时间统一为北京时间（GMT+8）</div>
+
+    <div class="actions">
+      <button class="btn primary" data-open="calendar">
+        <span class="btn-t">近期关键日历 <span class="pill">10–12 月</span><span class="arrow">→</span></span>
+        <span class="btn-s">月历视图，点事件直接跳官方日程</span>
+      </button>
+      <button class="btn" data-open="archive">
+        <span class="btn-t">历史事件归档 <span class="pill">含原文链接</span><span class="arrow">→</span></span>
+        <span class="btn-s">9 月议息会议、中美 CPI… 附官方原文</span>
+      </button>
+      <button class="btn" data-open="howto">
+        <span class="btn-t">链接怎么加进来<span class="arrow">→</span></span>
+        <span class="btn-s">怎么找官方原文 / 怎么把链接给我</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 当前基调 -->
+  <section id="regime">
+    <div class="sec-head">
+      <h2>当前基调</h2>
+      <span class="sec-note">三句话看清现在的宏观环境</span>
+    </div>
+    <div class="regime">
+      <div class="rg">
+        <div class="rg-h">美国 · 货币政策</div>
+        <div class="rg-v up">加息周期重启</div>
+        <p class="rg-p">9 月 16 日 FOMC <b>全票加息 25bp</b> 至 3.75%–4%，是 2023 年 7 月以来首次加息。8 月 CPI 同比 <b>3.4%</b>、PCE 同比 <b>3.7%</b>，通胀未回落至目标。</p>
+      </div>
+      <div class="rg">
+        <div class="rg-h">中国 · 物价水平</div>
+        <div class="rg-v">温和回升，PPI 转正后走强</div>
+        <p class="rg-p">8 月 CPI 同比 <b>+0.8%</b>（涨幅扩大 0.3pct），核心 CPI <b>+1.0%</b>；PPI 同比 <b>+3.8%</b>，环比由降转涨。</p>
+      </div>
+      <div class="rg">
+        <div class="rg-h">市场 · 资金成本</div>
+        <div class="rg-v up">利率中枢抬升</div>
+        <p class="rg-p">10 年期美债收益率约 <b>5.0%</b>，美元指数约 <b>100</b>。全球无风险利率上行，对高估值资产形成压制。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 信息源导航 -->
+  <section id="sources">
+    <div class="sec-head">
+      <h2>信息源导航</h2>
+      <span class="sec-note">官方源在前</span>
+    </div>
+    <p class="sec-desc">
+      卡片右上角：<span class="badge ok">可直接读取</span> 静态页面、我能稳定抓正文；
+      <span class="badge js">需处理</span> 依赖脚本渲染，适合人工看或走聚合源。
+    </p>
+
+    <div class="group">
+      <div class="group-title"><span class="dot"></span>中国官方数据与政策 <span class="gname-en">China Official</span></div>
+      <div class="srcs">
+        <a class="src" href="https://www.stats.gov.cn/sj/fbrc" target="_blank" rel="noopener" data-tip="全年发布日程表，列出CPI、PPI、PMI、经济数据的每个发布日期与时间，是做事件日历的权威底稿。">
+          <div class="src-name">国家统计局 · 发布日程 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">stats.gov.cn/sj/fbrc</div>
+          <div class="src-desc">CPI / PPI / PMI / 经济数据全年官方排期</div>
+        </a>
+        <a class="src" href="https://www.stats.gov.cn/sj/zxfb/" target="_blank" rel="noopener" data-tip="最新发布列表页，所有数据新闻稿与解读稿的原始出处，历史文章按年月归档可直接翻。">
+          <div class="src-name">统计局 · 最新发布 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">stats.gov.cn/sj/zxfb/</div>
+          <div class="src-desc">数据新闻稿与解读稿原文，按月归档</div>
+        </a>
+        <a class="src" href="https://data.stats.gov.cn/" target="_blank" rel="noopener" data-tip="含「发布预告」模块，可看今日与次日发布安排，以及全部历史月度/季度数据，适合回溯比对。">
+          <div class="src-name">国家数据 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">data.stats.gov.cn</div>
+          <div class="src-desc">发布预告 + 历史数据查询</div>
+        </a>
+        <a class="src" href="https://www.gov.cn/" target="_blank" rel="noopener" data-tip="国常会、政治局会议、重要政策文件第一发布渠道，措辞变化对板块影响极大。">
+          <div class="src-name">中国政府网 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">gov.cn</div>
+          <div class="src-desc">国常会、政治局会议、政策文件原文</div>
+        </a>
+        <a class="src" href="http://www.pbc.gov.cn/" target="_blank" rel="noopener" data-tip="LPR、MLF、降准降息、金融统计数据、货币政策执行报告，直接影响银行与利率敏感板块。">
+          <div class="src-name">中国人民银行 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">pbc.gov.cn</div>
+          <div class="src-desc">LPR / MLF / 金融数据 / 货币政策报告</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><span class="dot g2"></span>美国及全球官方数据 <span class="gname-en">US &amp; Global Official</span></div>
+      <div class="srcs">
+        <a class="src" href="https://www.bls.gov/schedule/news_release/" target="_blank" rel="noopener" data-tip="美国劳工统计局发布日历，CPI、非农、PPI的确切日期以这里为准，出现分歧时信它。">
+          <div class="src-name">BLS · 发布日程 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">bls.gov/schedule/news_release/</div>
+          <div class="src-desc">美国 CPI / 非农 / PPI 官方日期</div>
+        </a>
+        <a class="src" href="https://www.bls.gov/news.release/cpi.htm" target="_blank" rel="noopener" data-tip="当期CPI新闻稿全文（含分项与表格），历史各期在 /news.release/archives/ 下按「序列_月日年」命名存档。">
+          <div class="src-name">BLS · CPI 新闻稿 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">bls.gov/news.release/cpi.htm</div>
+          <div class="src-desc">CPI 全文与分项表，历史期存档可回溯</div>
+        </a>
+        <a class="src" href="https://www.bea.gov/news/schedule" target="_blank" rel="noopener" data-tip="美国经济分析局日程，GDP、PCE物价指数、个人收入支出的官方发布时间。">
+          <div class="src-name">BEA · 发布日程 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">bea.gov/news/schedule</div>
+          <div class="src-desc">GDP / PCE / 个人收支官方日程</div>
+        </a>
+        <a class="src" href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank" rel="noopener" data-tip="全年8次会议安排，每次会议后在这里挂声明、纪要与预测材料，是做利率复盘最好用的入口页。">
+          <div class="src-name">美联储 · FOMC 日历 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">federalreserve.gov/monetarypolicy/fomccalendars.htm</div>
+          <div class="src-desc">全年议息安排 + 声明 / 纪要入口</div>
+        </a>
+        <a class="src" href="https://www.federalreserve.gov/newsevents/speeches.htm" target="_blank" rel="noopener" data-tip="美联储官员演讲清单，主席与票委讲话常引发盘中波动。">
+          <div class="src-name">美联储 · 官员讲话 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">federalreserve.gov/newsevents/speeches.htm</div>
+          <div class="src-desc">主席与票委讲话安排</div>
+        </a>
+        <a class="src" href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" data-tip="《世界经济展望》与《全球金融稳定报告》，春秋两季更新，全球机构增长与风险预期的基准。">
+          <div class="src-name">IMF · 世界经济展望 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">imf.org/en/Publications/WEO</div>
+          <div class="src-desc">WEO / GFSR，春秋两季更新</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><span class="dot g3"></span>国际会议与地缘事件 <span class="gname-en">Meetings &amp; Geopolitics</span></div>
+      <div class="srcs">
+        <a class="src" href="https://g20.org/events-calendar" target="_blank" rel="noopener" data-tip="G20全年活动日历，含财长会、外长会、领导人峰会的确切日期与地点。今年领导人峰会在迈阿密。">
+          <div class="src-name">G20 官方活动日历 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">g20.org/events-calendar</div>
+          <div class="src-desc">财长会 / 外长会 / 领导人峰会时间地点</div>
+        </a>
+        <a class="src" href="https://www.imf.org/en/news/seminars/campaigns/2026/10/thailand-2026" target="_blank" rel="noopener" data-tip="2026年秋季年会专题页，10月12—18日在曼谷，含议程、发布会与关键文件发布安排。">
+          <div class="src-name">IMF / 世行年会 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">imf.org（2026 曼谷年会）</div>
+          <div class="src-desc">10/12–18 曼谷，含议程与关键报告</div>
+        </a>
+        <a class="src" href="https://www.controlrisks.com/our-thinking/geopolitical-calendar" target="_blank" rel="noopener" data-tip="第三方地缘政治日历，把选举、峰会、谈判按时间排列并附影响评估，做事件驱动很有用。">
+          <div class="src-name">地缘政治日历 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">controlrisks.com（Geopolitical Calendar）</div>
+          <div class="src-desc">选举、峰会、谈判按时间排列，附评估</div>
+        </a>
+        <a class="src" href="https://unfccc.int/" target="_blank" rel="noopener" data-tip="气候变化框架公约官网，COP会议安排与决议文件，影响新能源、碳交易相关板块。">
+          <div class="src-name">UNFCCC · 气候大会 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">unfccc.int</div>
+          <div class="src-desc">COP 会议安排与决议文件</div>
+        </a>
+        <a class="src" href="https://www.weforum.org/events/" target="_blank" rel="noopener" data-tip="世界经济论坛（达沃斯）年会通常1月举行，议题方向常成为全年产业热点的风向标。">
+          <div class="src-name">世界经济论坛 <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">weforum.org/events</div>
+          <div class="src-desc">达沃斯年会（通常1月），热点风向标</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><span class="dot g4"></span>快讯聚合与财经日历 <span class="gname-en">News &amp; Calendars</span></div>
+      <div class="srcs">
+        <a class="src" href="https://www.jin10.com/" target="_blank" rel="noopener" data-tip="金十数据主站，快讯流按秒级更新，带「重要」标记与解读，实时性最强，但页面依赖脚本渲染。">
+          <div class="src-name">金十数据 <span class="badge js">需处理</span></div>
+          <div class="src-url">jin10.com</div>
+          <div class="src-desc">秒级快讯流，带重要标记与解读</div>
+        </a>
+        <a class="src" href="https://datacenter.jin10.com/" target="_blank" rel="noopener" data-tip="金十数据中心，财经日历、事件预告、各国数据预期值与前值对比，适合盘前铺排。">
+          <div class="src-name">金十数据中心 <span class="badge js">需处理</span></div>
+          <div class="src-url">datacenter.jin10.com</div>
+          <div class="src-desc">财经日历 + 预期值/前值对比</div>
+        </a>
+        <a class="src" href="https://wallstreetcn.com/calendar" target="_blank" rel="noopener" data-tip="华尔街见闻日历，中文界面把全球重要数据与会议排在一张表上，颗粒度和金十接近。">
+          <div class="src-name">华尔街见闻 · 日历 <span class="badge js">需处理</span></div>
+          <div class="src-url">wallstreetcn.com/calendar</div>
+          <div class="src-desc">全球数据与会议的中文日历总览</div>
+        </a>
+        <a class="src" href="https://data.eastmoney.com/cjrl/" target="_blank" rel="noopener" data-tip="东方财富财经日历，偏A股视角，会把国内数据与政策事件一起列出，另有解禁、新股等日程。">
+          <div class="src-name">东方财富 · 财经日历 <span class="badge js">需处理</span></div>
+          <div class="src-url">data.eastmoney.com/cjrl/</div>
+          <div class="src-desc">A股视角日程，含解禁、新股</div>
+        </a>
+        <a class="src" href="https://www.cls.cn/telegraph" target="_blank" rel="noopener" data-tip="财联社电报，A股盘中消息密度最高的一档，政策、公司、行业消息传播最快。">
+          <div class="src-name">财联社 · 电报 <span class="badge js">需处理</span></div>
+          <div class="src-url">cls.cn/telegraph</div>
+          <div class="src-desc">A股盘中消息密度最高</div>
+        </a>
+        <a class="src" href="https://tradingeconomics.com/calendar" target="_blank" rel="noopener" data-tip="英文财经日历，全球各国数据一张表，可按国家与重要性筛选，历史数据齐全。">
+          <div class="src-name">Trading Economics <span class="badge ok">可直接读取</span></div>
+          <div class="src-url">tradingeconomics.com/calendar</div>
+          <div class="src-desc">全球数据日历，可筛重要性，历史齐全</div>
+        </a>
+        <a class="src" href="https://cn.investing.com/economic-calendar/" target="_blank" rel="noopener" data-tip="英为财情财经日历，中文界面，带实际值与预期值对比、影响级别标记。">
+          <div class="src-name">英为财情 · 财经日历 <span class="badge js">需处理</span></div>
+          <div class="src-url">cn.investing.com/economic-calendar/</div>
+          <div class="src-desc">实际值 vs 预期值，标注影响级别</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title"><span class="dot g5"></span>板块热点与个股联动 <span class="gname-en">Sector Heat</span></div>
+      <div class="srcs">
+        <a class="src" href="https://www.iwencai.com/" target="_blank" rel="noopener" data-tip="同花顺问财，用自然语言直接查询，例如「今日涨幅前10的概念板块」，绕过逐层点选。">
+          <div class="src-name">同花顺 · 问财 <span class="badge js">需处理</span></div>
+          <div class="src-url">iwencai.com</div>
+          <div class="src-desc">自然语言查板块与个股</div>
+        </a>
+        <a class="src" href="https://q.10jqka.com.cn/" target="_blank" rel="noopener" data-tip="同花顺行情中心，概念与行业板块的涨跌幅、换手、领涨股，也就是截图里那块内容的网页版。">
+          <div class="src-name">同花顺 · 行情中心 <span class="badge js">需处理</span></div>
+          <div class="src-url">q.10jqka.com.cn</div>
+          <div class="src-desc">板块涨跌幅与领涨股</div>
+        </a>
+        <a class="src" href="https://data.eastmoney.com/bkzj/" target="_blank" rel="noopener" data-tip="东方财富板块资金流，按主力净流入排序，判断资金真实流向，比单纯涨幅更能过滤噪音。">
+          <div class="src-name">东方财富 · 板块资金流 <span class="badge js">需处理</span></div>
+          <div class="src-url">data.eastmoney.com/bkzj/</div>
+          <div class="src-desc">主力净流入排序，看资金真实方向</div>
+        </a>
+        <a class="src" href="https://data.eastmoney.com/report/" target="_blank" rel="noopener" data-tip="券商研报中心，看机构最近在推什么方向，与热点板块互相验证。">
+          <div class="src-name">东方财富 · 研报中心 <span class="badge js">需处理</span></div>
+          <div class="src-url">data.eastmoney.com/report/</div>
+          <div class="src-desc">券商研报汇总，看机构主推方向</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    重要信息源导航 · 生成于 2026-10-09　|　日期与时间为编制时点的公开安排，可能随官方调整变化，重要节点建议点击原始链接二次核对。
+  </footer>
+</div>
+
+<!-- ================= 弹层 1：近期关键日历 ================= -->
+<div class="modal" id="m-calendar">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>近期关键日历</h3>
+      <span class="sub">2026 年 10–12 月 · 北京时间</span>
+      <button class="close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs" id="calTabs">
+        <button class="tab on" data-m="2026-10">2026 年 10 月</button>
+        <button class="tab" data-m="2026-11">11 月</button>
+        <button class="tab" data-m="2026-12">12 月</button>
+      </div>
+      <div class="cal" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><i style="background:var(--red)"></i>一级 · 直接决定利率与大盘方向</span>
+        <span><i style="background:var(--amber)"></i>二级 · 行业与板块级影响</span>
+        <span><i style="background:#c8ced7"></i>常规</span>
+        <span style="color:var(--sub-2)">点方块内的条目直接打开官方页面</span>
+      </div>
+      <div class="notes" id="calNotes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 弹层 2：历史事件归档 ================= -->
+<div class="modal" id="m-archive">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>历史事件归档</h3>
+      <span class="sub">按时间倒序 · 每条附官方原文链接</span>
+      <button class="close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div id="arcList"></div>
+      <div class="callout" style="margin-top:22px">
+        这里先放进 2026 年 9 月以来的关键节点。每往后一个月，内容会往这里续一条 ——
+        你也可以随时把某个事件的原文链接丢给我，我按日期加进去。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 弹层 3：链接怎么加进来 ================= -->
+<div class="modal" id="m-howto">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>怎么找官方原文链接 · 怎么把链接给我</h3>
+      <button class="close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+
+      <h4 style="margin:0 0 4px;font-size:14.5px">一、官方原文链接的固定规律（会了就不用翻菜单）</h4>
+      <p style="margin:0 0 6px;font-size:12.5px;color:var(--sub)">
+        主流机构的新闻稿链接都是「规律 + 年月日」拼出来的，日期一换就是当期原文。
+      </p>
+      <table class="rule">
+        <thead>
+          <tr><th style="width:22%">来源</th><th style="width:44%">链接规律</th><th>验证示例</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>美联储<br><span style="color:var(--sub-2);font-size:11.5px">FOMC 声明</span></td>
+            <td><code>/newsevents/pressreleases/monetary</code> + <code>YYYYMMDD</code> + <code>a.htm</code></td>
+            <td>2026 年 9 月 16 日加息 → <code>monetary20260916a.htm</code>（已验证可打开）</td>
+          </tr>
+          <tr>
+            <td>美联储<br><span style="color:var(--sub-2);font-size:11.5px">会议纪要 / 预测</span></td>
+            <td><code>/monetarypolicy/fomcminutes</code> + <code>YYYYMMDD</code> + <code>.htm</code><br>
+                <code>/monetarypolicy/fomcprojtabl</code> + <code>YYYYMMDD</code> + <code>.htm</code></td>
+            <td>9 月会议 → <code>fomcminutes20260916.htm</code>、<code>fomcprojtabl20260916.htm</code></td>
+          </tr>
+          <tr>
+            <td>美国 BLS<br><span style="color:var(--sub-2);font-size:11.5px">CPI / 非农 / PPI</span></td>
+            <td>当期：<code>/news.release/cpi.htm</code><br>
+                存档：<code>/news.release/archives/</code> + <code>序列_MMDDYYYY.htm</code></td>
+            <td>8 月 CPI 存档 → <code>archives/cpi_09112026.htm</code></td>
+          </tr>
+          <tr>
+            <td>美国 BEA<br><span style="color:var(--sub-2);font-size:11.5px">GDP / PCE</span></td>
+            <td>日程：<code>/news/schedule</code>；存档：<code>/news.release/archives/</code></td>
+            <td>从日程页点进去就是当期原文</td>
+          </tr>
+          <tr>
+            <td>中国国家统计局</td>
+            <td>新闻稿：<code>/sj/zxfb/</code>；解读稿：<code>/sj/zxfbhjd/</code> + <code>年月/</code> + <code>t年月日_编号.html</code></td>
+            <td>8 月 CPI 解读 → <code>/sj/zxfbhjd/202609/t20260909_1965261.html</code></td>
+          </tr>
+          <tr>
+            <td>金十 / 财联社<br><span style="color:var(--sub-2);font-size:11.5px">快讯类</span></td>
+            <td>没有规律，用文章右上角「分享 → 复制链接」</td>
+            <td>复制后直接粘给我即可</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin:18px 0 4px;font-size:14.5px">二、把链接给我的四种方式</h4>
+      <div class="ways">
+        <div class="way">
+          <h4><span class="num">1</span>直接粘贴链接 <span class="best">最快</span></h4>
+          <p>在对话里把 URL 发给我，说明它属于哪个事件（或直接把日期给我），我立刻归档进「历史事件归档」，并补上数据要点。</p>
+        </div>
+        <div class="way">
+          <h4><span class="num">2</span>只说「哪天 + 什么事」</h4>
+          <p>例如「9 月 16 日美联储议息会议原文」。我按上面的链接规律去官方源定位，找到后把链接和要点一起写进归档，不用你动手翻。</p>
+        </div>
+        <div class="way">
+          <h4><span class="num">3</span>网页另存 / 截图拖进来</h4>
+          <p>把官方页面另存成 PDF，或截图后直接拖进对话。我从文件里提取原文出处与关键数据，再补上原文链接。</p>
+        </div>
+        <div class="way">
+          <h4><span class="num">4</span>批量放「资料库」</h4>
+          <p>链接多的时候，统一存进资料库，我一次性整理成带日期的清单，按月份并入归档区。</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:20px">
+        <strong>归档后的样子：</strong>每条包含 —— 日期、事件标题、关键数据要点（3–4 个数字）、市场反应、官方原文链接 1–2 条。
+        想更省事的话，也可以设成每月固定跑一次：我自动把上个月的数据与会议原文补齐，你只看结果。
+      </div>
+
+      <div class="warn">
+        原文链接优先用发布机构官网。第三方转载（新闻站、聚合号）可能与原文有出入，尤其数字口径（环比/同比、季调/未季调）容易混淆，归档时我会标注来源。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tip"></div>
+
+<script>
+/* ================= 数据 ================= */
+const CAL_EVENTS = [
+  {d:'2026-10-12', lvl:'hi',  tm:'',       t:'IMF / 世行秋季年会开幕（至 10/18）', u:'https://www.imf.org/en/news/seminars/campaigns/2026/10/thailand-2026',
+   tip:'曼谷举行。IMF 通常在此期间更新《世界经济展望》与《全球金融稳定报告》，是全球增长预期的基准文件。'},
+  {d:'2026-10-14', lvl:'hi',  tm:'09:30',  t:'中国 9 月 CPI / PPI', u:'https://www.stats.gov.cn/sj/fbrc',
+   tip:'国家统计局发布。前值参考：8 月 CPI 同比 +0.8%、PPI 同比 +3.8%。CPI 偏低→宽松预期升温；PPI 回升→利好上游资源与周期板块。'},
+  {d:'2026-10-14', lvl:'hi',  tm:'20:30',  t:'美国 9 月 CPI', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'BLS 发布。当前美国正处于加息周期重启阶段（9 月已加息 25bp），CPI 偏热将强化再加息预期，美债收益率与成长股承压。注意：另有日历显示为 10/13，以 BLS 官网为准。'},
+  {d:'2026-10-15', lvl:'mid', tm:'20:30',  t:'美国 9 月 PPI', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'生产者价格指数，常作为 CPI 的先行参考，对上游资源、化工、航运等板块有传导意义。'},
+  {d:'2026-10-15', lvl:'mid', tm:'',       t:'G20 财长与央行行长会议', u:'https://g20.org/events-calendar',
+   tip:'在 IMF / 世行曼谷年会期间举行。关注联合公报中对全球增长、汇率与贸易的措辞变化。'},
+  {d:'2026-10-19', lvl:'hi',  tm:'10:00',  t:'中国三季度 GDP + 9 月经济数据', u:'https://data.stats.gov.cn/',
+   tip:'工业增加值、社零、固定资产投资、房地产数据一次性发布。判断国内经济成色最密集的一天，直接影响顺周期、地产链、消费板块。'},
+  {d:'2026-10-25', lvl:'',    tm:'',       t:'UNCTAD 世界投资论坛（至 10/27）', u:'https://unctad.org/',
+   tip:'多哈举行，主题「投资未来」，涉及全球投资流向与产业链转移议题。'},
+  {d:'2026-10-28', lvl:'mid', tm:'',       t:'美联储 FOMC 会议首日（至 10/28）', u:'https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm',
+   tip:'为期两天的议息会议。上次（9 月）已加息 25bp 至 3.75%–4%，本次是「是否继续加息」的关键会议。'},
+  {d:'2026-10-29', lvl:'hi',  tm:'02:00',  t:'美联储 FOMC 利率决议', u:'https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm',
+   tip:'决议于北京时间 10 月 29 日凌晨 02:00 公布，02:30 有主席记者会。北京时间标注注意：11 月起美国结束夏令时，时点会后移一小时。'},
+  {d:'2026-10-29', lvl:'hi',  tm:'20:30',  t:'美国 Q3 GDP 初值 + 9 月 PCE', u:'https://www.bea.gov/news/schedule',
+   tip:'PCE 物价指数是美联储最看重的通胀指标，当前同比约 3.7%，明显高于 2% 目标，是决定后续利率路径的核心数据。'},
+  {d:'2026-10-30', lvl:'',    tm:'',       t:'G20 外长会议（至 10/31）', u:'https://g20.org/events-calendar',
+   tip:'议题偏政治与安全，通常对市场影响有限，但涉及贸易与能源措辞时需留意。'},
+
+  {d:'2026-11-03', lvl:'hi',  tm:'',       t:'美国中期选举', u:'https://www.controlrisks.com/our-thinking/geopolitical-calendar',
+   tip:'改选全部众议院席位、三分之一参议院席位及 36 个州长。结果影响财政、税收与监管预期。'},
+  {d:'2026-11-06', lvl:'mid', tm:'21:30',  t:'美国 10 月非农就业', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'11 月 1 日美国结束夏令时，08:30 ET 由 20:30 变为北京时间 21:30，注意时点。前值：8 月 +16.2 万，失业率 4.1%。'},
+  {d:'2026-11-10', lvl:'hi',  tm:'21:30',  t:'美国 10 月 CPI', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'在 10 月议息会议之后发布，是判断 12 月会议是否继续加息的关键依据。'},
+  {d:'2026-11-13', lvl:'',    tm:'21:30',  t:'美国 10 月 PPI', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'生产者价格指数，观察通胀传导的上游环节。'},
+  {d:'2026-11-25', lvl:'',    tm:'21:30',  t:'美国 10 月 PCE', u:'https://www.bea.gov/news/schedule',
+   tip:'美联储最看重的通胀指标，同时发布个人收入与支出数据。'},
+
+  {d:'2026-12-04', lvl:'',    tm:'21:30',  t:'美国 11 月非农就业', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'12 月议息会议前的重要就业数据。'},
+  {d:'2026-12-10', lvl:'hi',  tm:'03:00',  t:'美联储年内最后一次利率决议', u:'https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm',
+   tip:'12 月 8–9 日会议，决议北京时间 12 月 10 日凌晨 03:00（夏令时已结束）。通常同时发布经济预测摘要（SEP）与点阵图。'},
+  {d:'2026-12-10', lvl:'mid', tm:'21:30',  t:'美国 11 月 CPI', u:'https://www.bls.gov/schedule/news_release/',
+   tip:'年内最后一份 CPI，为次年政策路径提供起点。'},
+  {d:'2026-12-14', lvl:'hi',  tm:'',       t:'G20 领导人峰会（至 12/15）', u:'https://g20.org/events-calendar',
+   tip:'迈阿密举行。级别最高的多边场合，公报措辞对贸易与地缘风险偏好影响较大。'},
+  {d:'2026-12-23', lvl:'',    tm:'21:30',  t:'美国 11 月 PCE', u:'https://www.bea.gov/news/schedule',
+   tip:'年内最后一份 PCE 通胀数据。'}
+];
+
+const CAL_NOTES = {
+  '2026-10': [
+    '10 月国内通常还有一次中央政治局会议（季度惯例，多在月底），以官方通稿为准。',
+    '美国 9 月 CPI 日期存在 10/13 与 10/14 两种说法，以 BLS 官网日程为准。'
+  ],
+  '2026-11': [
+    '11 月 1 日美国结束夏令时：08:30 ET 由北京时间 20:30 变为 21:30，14:00 ET 变为次日 03:00。',
+    'COP31 联合国气候变化大会本月举行（土耳其），具体议程以 UNFCCC 官网为准。'
+  ],
+  '2026-12': [
+    '中央经济工作会议通常 12 月中旬召开，定调次年财政与货币政策，以官方通稿为准。',
+    '12 月 9 日议息会议为年内最后一次，决议于北京时间 12 月 10 日凌晨公布。'
+  ]
+};
+
+const ARCHIVE = [
+  {
+    date:'2026-10-07', tag:'美联储', lvl:'mid',
+    title:'美联储公布 9 月会议纪要',
+    facts:['对应 9/15–16 会议','纪要入口：FOMC 日历页 → 对应会议行'],
+    links:[{n:'FOMC 日历与纪要入口', u:'https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm'}]
+  },
+  {
+    date:'2026-09-16', tag:'美联储', lvl:'hi',
+    title:'美联储加息 25bp 至 3.75%–4%，为 2023 年 7 月以来首次加息',
+    facts:['12–0 全票通过','主席 Kevin Warsh 主持','声明：通胀仍高企，行动支持通胀更快回落至 2%','首提设立 AI 经济影响研究工作组'],
+    market:'10 年期美债收益率升至 <b>5.012%</b>，美元指数涨 <b>0.6%</b> 至 <b>100.3</b>，美股盘中转跌。市场解读为鹰派信号，认为年底前可能至少再加息一次。SEP 显示 2026 年联邦基金利率预测中值由 6 月的 3.8% 升至 <b>4.1%</b>。',
+    links:[
+      {n:'FOMC 声明原文', u:'https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm'},
+      {n:'经济预测摘要 (SEP)', u:'https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm'}
+    ]
+  },
+  {
+    date:'2026-09-11', tag:'美国 CPI', lvl:'hi',
+    title:'美国 8 月 CPI：环比 +0.4%，同比 +3.4%',
+    facts:['核心 CPI 环比 +0.3%、同比 +2.4%','汽油环比 +3.9%，贡献超三分之一的月度涨幅','能源同比 +16.3%，汽油同比 +27.4%'],
+    market:'能源价格是主要推手，通胀出现明显反弹，为随后 9 月加息提供了数据基础。',
+    links:[{n:'BLS 新闻稿（当期 CPI）', u:'https://www.bls.gov/news.release/cpi.htm'}]
+  },
+  {
+    date:'2026-09-09', tag:'中国 CPI', lvl:'hi',
+    title:'中国 8 月 CPI 同比 +0.8%，PPI 同比 +3.8%',
+    facts:['CPI 环比 +0.4%，由降转涨','核心 CPI 同比 +1.0%','PPI 同比涨幅扩大 0.3pct，环比 +0.4%'],
+    market:'CPI 温和回升、PPI 转正后走强，物价运行在合理区间。',
+    links:[{n:'统计局官方解读原文', u:'https://www.stats.gov.cn/sj/zxfbhjd/202609/t20260909_1965261.html'}]
+  },
+  {
+    date:'2026-09-04', tag:'非农', lvl:'mid',
+    title:'美国 8 月非农新增 16.2 万，失业率 4.1%',
+    facts:['失业率与前月持平','平均时薪 +0.10 美元'],
+    links:[{n:'BLS 就业报告', u:'https://www.bls.gov/news.release/empsit.htm'}]
+  }
+];
+
+/* ================= 日历渲染 ================= */
+const WEEK = ['一','二','三','四','五','六','日'];
+const TODAY = '2026-10-09';
+
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+
+function renderCal(ym){
+  const [y, m] = ym.split('-').map(Number);
+  const first = new Date(y, m-1, 1);
+  const offset = (first.getDay() + 6) % 7;          // 周一为一周起点
+  const days = new Date(y, m, 0).getDate();
+
+  let html = WEEK.map((w,i) => `<div class="cal-h${i>4?' we':''}">${w}</div>`).join('');
+  for (let i=0;i<offset;i++) html += '<div class="cal-d pad"></div>';
+
+  for (let d=1; d<=days; d++){
+    const ds = `${y}-${pad(m)}-${pad(d)}`;
+    const evs = CAL_EVENTS.filter(e => e.d === ds);
+    const tdy = ds === TODAY ? ' today' : '';
+    let inner = `<span class="dn">${d}</span>`;
+    evs.forEach(e => {
+      const lvl = e.lvl ? ' ' + e.lvl : '';
+      const tm = e.tm ? `<span class="tm">${e.tm}</span> ` : '';
+      inner += `<a class="cal-ev${lvl}" href="${e.u}" target="_blank" rel="noopener" data-tip="${e.tip.replace(/"/g,'&quot;')}">${tm}${e.t}</a>`;
+    });
+    html += `<div class="cal-d${tdy}">${inner}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+
+  const notes = CAL_NOTES[ym] || [];
+  document.getElementById('calNotes').innerHTML =
+    `<h4>本月提醒</h4><ul>${notes.map(n=>`<li>${n}</li>`).join('')}</ul>`;
+}
+
+document.getElementById('calTabs').addEventListener('click', e => {
+  const b = e.target.closest('.tab');
+  if (!b) return;
+  document.querySelectorAll('#calTabs .tab').forEach(t => t.classList.toggle('on', t === b));
+  renderCal(b.dataset.m);
+});
+renderCal('2026-10');
+
+/* ================= 归档渲染 ================= */
+document.getElementById('arcList').innerHTML = ARCHIVE.map(a => `
+  <div class="arc-item${a.lvl === 'hi' ? ' hi' : ''}">
+    <div class="arc-date">${a.date} · ${a.tag}</div>
+    <div class="arc-title">${a.title}</div>
+    <div class="chips">${a.facts.map(f=>`<span class="chip">${f}</span>`).join('')}</div>
+    ${a.market ? `<div class="arc-market">市场反应：${a.market}</div>` : ''}
+    <div class="arc-links">${a.links.map(l=>`<a href="${l.u}" target="_blank" rel="noopener">${l.n} →</a>`).join('')}</div>
+  </div>
+`).join('');
+
+/* ================= 弹层控制 ================= */
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.classList.add('lock');
+}
+function closeAll(){
+  document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+  document.body.classList.remove('lock');
+}
+document.querySelectorAll('[data-open]').forEach(b => {
+  b.addEventListener('click', () => openModal('m-' + b.dataset.open));
+});
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeAll));
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeAll(); });
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+/* ================= tooltip（事件委托，动态元素同样生效） ================= */
+const tip = document.getElementById('tip');
+function moveTip(e){
+  const w = tip.offsetWidth, h = tip.offsetHeight, p = 14;
+  let x = e.clientX + p, y = e.clientY + p;
+  if (x + w > window.innerWidth - 8) x = e.clientX - w - p;
+  if (y + h > window.innerHeight - 8) y = e.clientY - h - p;
+  tip.style.transform = `translate(${x}px,${y}px)`;
+}
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('[data-tip]');
+  if (!el) return;
+  tip.textContent = el.getAttribute('data-tip');
+  tip.classList.add('on');
+  moveTip(e);
+});
+document.addEventListener('mousemove', e => { if (tip.classList.contains('on')) moveTip(e); });
+document.addEventListener('mouseout', e => {
+  const el = e.target.closest('[data-tip]');
+  if (el && !el.contains(e.relatedTarget)) tip.classList.remove('on');
+});
+</script>
+</body>
+</html>

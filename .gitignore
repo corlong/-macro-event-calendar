@@ -1,0 +1,3 @@
+# WorkBuddy 运行时生成的机器相关文件（换电脑会变，不入库）
+.wbapp_*.genie
+.workbuddy/applications.yaml
