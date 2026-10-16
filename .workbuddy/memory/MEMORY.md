@@ -30,6 +30,8 @@
 
 ## Git / 跨设备
 - 本地已 `git init -b main`（2026-10-16），私有仓库，远端 GitHub + Gitee 双份。
+- **GitHub 已打通**：`origin = git@github.com:corlong/-macro-event-calendar.git`（仓库名前面那个横杠是
+  用户建仓时误输入的，能用，但不美观；可在 GitHub 设置里 Rename 掉，旧地址会自动重定向）。
 - GitHub 账号 `corlong`，SSH 已授权；Gitee 公钥待用户添加。
 - `.gitignore` 排除 `.wbapp_*.genie`、`.workbuddy/applications.yaml`；`.workbuddy/memory` **刻意入库**，
   因为本地记忆不会跨设备同步，入库后新机器才能接着干。
